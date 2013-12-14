@@ -27,16 +27,25 @@ get '/' do
               id: new_id)
           end
         end
-        settings.connections << { id: new_id, ws: ws }
+        settings.connections << { id: new_id, ws: ws, card: -1 }
       end
 
       ws.onmessage do |msg|
         json = JSON.parse(msg)
+
+        json_to_send = []
+        case json['action']
+        when 'card-change'
+          conn = settings.connections.detect { |c| c[:id] == json['id'] }
+          conn[:card] = json['card_index']
+
+          json_to_send = json(action: 'card-ready',
+            id: json['id'])
+        end
+        puts json_to_send
         EM.next_tick do
           settings.connections.each do |s|
-            s[:ws].send(json(action: json['action'],
-              id: json['id'],
-              data: json['data']))
+            s[:ws].send json_to_send
           end
         end
       end

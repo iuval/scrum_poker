@@ -26,8 +26,8 @@ window.onload = function(){
       case 'lost-connection':
         lost_connection(json.id);
         break;
-      case 'card-change':
-        show(id + ' card-change: ' + json.data);
+      case 'card-ready':
+        card_ready(json.id);
         break;
       case 'story-change':
         break;
@@ -39,11 +39,18 @@ window.onload = function(){
   create_cards();
 };
 
-function change_card (num) {
+function card_ready (id) {
+  $conn = $("#connections a[data-id='" + id + "']");
+  $conn.data('done', true);
+  $conn.removeClass('btn-warning');
+  $conn.addClass('btn-success');
+}
+
+function card_change (card_index) {
   ws.send(JSON.stringify({
     'action': 'card-change',
-    'id':     id,
-    'data':   num,
+    'id':     my_id,
+    'data':   card_index,
   }));
 }
 
@@ -57,7 +64,7 @@ function create_cards () {
       click: function(e) {
         e.preventDefault();
         e.stopPropagation();
-        change_card(val);
+        card_change(i);
       }
     }).appendTo($cards);
   })
@@ -77,9 +84,10 @@ function new_connection (id) {
 function add_card (id) {
   $connections = $('#connections')
   $('<a>', {
-    'data-id': id,
-    'text':    id,
-    'class':   'btn btn-info'
+    'data-id':   id,
+    'data-done': false,
+    'text':      '...',
+    'class':     'btn btn-warning'
   }).appendTo($connections);
 }
 
