@@ -1,15 +1,3 @@
-require 'rubygems'
-require 'bundler'
-require 'sinatra'
-require 'sinatra-websocket'
-require "sinatra/json"
-require 'sinatra/flash'
-Bundler.require
-
-enable :sessions
-
-set :root, File.dirname(__FILE__)
-
 set :server, 'thin'
 set :rooms, []
 set :connections, []
@@ -19,7 +7,7 @@ get '/' do
 end
 
 get '/create_room_id' do
-  
+
 end
 
 get '/:room_id' do

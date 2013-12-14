@@ -15,13 +15,37 @@ GEM
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
     eventmachine (1.0.3)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
     haml (4.0.3)
       tilt
+    hashie (2.0.5)
+    httpauth (0.2.0)
+    jwt (0.1.8)
+      multi_json (>= 1.5)
     multi_json (1.8.2)
+    multipart-post (1.2.0)
+    oauth2 (0.8.1)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
+    omniauth (1.1.4)
+      hashie (>= 1.2, < 3)
+      rack
+    omniauth-google-oauth2 (0.1.13)
+      omniauth (~> 1.0)
+      omniauth-oauth2
+    omniauth-oauth2 (1.1.1)
+      oauth2 (~> 0.8.0)
+      omniauth (~> 1.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
     rack-test (0.6.2)
+      rack (>= 1.0)
+    shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.4.2)
       rack (~> 1.5, >= 1.5.2)
@@ -52,6 +76,9 @@ PLATFORMS
 DEPENDENCIES
   debugger
   haml
+  omniauth
+  omniauth-google-oauth2
+  shotgun
   sinatra
   sinatra-contrib
   sinatra-flash
