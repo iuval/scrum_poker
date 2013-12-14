@@ -2,12 +2,13 @@ require 'rubygems'
 require 'bundler'
 require 'sinatra'
 require 'sinatra-websocket'
+require "sinatra/json"
 Bundler.require
 
 set :root, File.dirname(__FILE__)
 
 set :server, 'thin'
-set :sockets, []
+set :connections, []
 
 get '/' do
   if !request.websocket?
@@ -15,15 +16,34 @@ get '/' do
   else
     request.websocket do |ws|
       ws.onopen do
-        ws.send("Hello World!")
-        settings.sockets << ws
+        new_id = rand(100)
+        ws.send json(action: 'enter-room',
+          id: new_id,
+          member_ids: settings.connections.map { |c| c[:id] })
+
+        EM.next_tick do
+          settings.connections.each do |c|
+            c[:ws].send json(action: 'new-connection',
+              id: new_id)
+          end
+        end
+        settings.connections << { id: new_id, ws: ws }
       end
+
       ws.onmessage do |msg|
-        EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+        json = JSON.parse(msg)
+        EM.next_tick do
+          settings.connections.each do |s|
+            s[:ws].send(json(action: json['action'],
+              id: json['id'],
+              data: json['data']))
+          end
+        end
       end
+
       ws.onclose do
         warn("wetbsocket closed")
-        settings.sockets.delete(ws)
+        settings.connections.delete_if { |c| c[:ws] == ws }
       end
     end
   end

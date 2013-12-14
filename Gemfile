@@ -4,7 +4,8 @@ gem 'sinatra'
 gem 'sinatra-websocket'
 gem 'haml'
 gem 'thin'
+gem "sinatra-contrib"
 
-group :development do
-	gem 'shotgun'
+group :production do
+  gem 'debugger'
 end
