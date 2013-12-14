@@ -29,6 +29,9 @@ window.onload = function(){
       case 'card-ready':
         card_ready(json.id);
         break;
+      case 'reveal':
+        card_ready(json.id);
+        break;
       case 'story-change':
         break;
       default:
@@ -93,4 +96,10 @@ function add_card (id) {
 
 function lost_connection (id) {
   $("#connections a[data-id='" + id + "']").remove();
+}
+
+function reveal (cards) {
+  $.each(cards, function (i, card) {
+    $("#connections a[data-id='" + card.id + "']").text(card.value);
+  });
 }
