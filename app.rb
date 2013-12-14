@@ -43,7 +43,15 @@ get '/' do
 
       ws.onclose do
         warn("wetbsocket closed")
-        settings.connections.delete_if { |c| c[:ws] == ws }
+        lost_conn = settings.connections.detect { |c| c[:ws] == ws }
+        settings.connections.delete lost_conn
+
+        EM.next_tick do
+          settings.connections.each do |c|
+            c[:ws].send json(action: 'lost-connection',
+              id: lost_conn[:id])
+          end
+        end
       end
     end
   end

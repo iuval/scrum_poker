@@ -23,7 +23,8 @@ window.onload = function(){
       case 'new-connection':
         new_connection(json.id)
         break;
-      case 'user-out':
+      case 'lost-connection':
+        lost_connection(json.id);
         break;
       case 'card-change':
         show(id + ' card-change: ' + json.data);
@@ -76,8 +77,12 @@ function new_connection (id) {
 function add_card (id) {
   $connections = $('#connections')
   $('<a>', {
-    data: { id: id },
-    text: id,
-    class: 'btn btn-info'
+    'data-id': id,
+    'text':    id,
+    'class':   'btn btn-info'
   }).appendTo($connections);
+}
+
+function lost_connection (id) {
+  $("#connections a[data-id='" + id + "']").remove();
 }
